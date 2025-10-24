@@ -1,0 +1,37 @@
+# values.yaml
+tempo:
+  retention: 720h  # 30 days retention
+  
+# Resource limits
+resources:
+  limits:
+    cpu: 1000m
+    memory: 2Gi
+  requests:
+    cpu: 500m
+    memory: 1Gi
+
+# Enable persistence
+persistence:
+  enabled: true
+  size: 10Gi
+
+# Enable service monitor for Prometheus
+serviceMonitor:
+  enabled: true
+
+
+traces:
+  otlp:
+    http:
+      # -- Enable Tempo to ingest Open Telemetry HTTP traces
+      enabled: true
+      # -- HTTP receiver advanced config
+      receiverConfig: {}
+    grpc:
+      # -- Enable Tempo to ingest Open Telemetry GRPC traces
+      enabled: true
+      # -- GRPC receiver advanced config
+      receiverConfig: {}
+      # -- Default OTLP gRPC port
+      port: 4317
