@@ -137,6 +137,10 @@ internalTelemetryViaOTLP:
 # For example, {{ REDACTED_EMAIL }} becomes {{` {{ REDACTED_EMAIL }} `}}.
 config:
   exporters:
+    otlp/tempo:
+      endpoint: tempo-distributor.monitoring.svc.cluster.local:4317
+      tls:
+        insecure: true
     debug: {}
   extensions:
     # The health_check extension is mandatory for this chart.
@@ -195,6 +199,7 @@ config:
       logs:
         exporters:
           - debug
+          - otlp/tempo
         processors:
           - memory_limiter
           - batch
