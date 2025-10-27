@@ -199,7 +199,6 @@ config:
       logs:
         exporters:
           - debug
-          - otlp/tempo
         processors:
           - memory_limiter
           - batch
@@ -218,6 +217,7 @@ config:
       traces:
         exporters:
           - debug
+          - otlp/tempo
         processors:
           - memory_limiter
           - batch
