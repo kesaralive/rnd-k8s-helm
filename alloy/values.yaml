@@ -39,7 +39,7 @@ alloy:
         format = "logfmt"
       }
 
-      # 1️⃣ Receiver — listens for OTLP (from apps or another collector)
+      
       otelcol.receiver.otlp "default" {
         protocols {
           grpc { endpoint = "0.0.0.0:4317" }
@@ -47,7 +47,7 @@ alloy:
         }
       }
 
-      # 2️⃣ Processor — batches data before sending to Tempo
+      
       otelcol.processor.batch "default" {
         input {
           metrics = [otelcol.receiver.otlp.default.output]
@@ -56,12 +56,12 @@ alloy:
         }
       }
 
-      # 3️⃣ Exporter — sends to Tempo over OTLP
+     
       otelcol.exporter.otlp "tempo" {
         client {
           endpoint = "tempo-distributor.monitoring.svc.cluster.local:4317"
           tls {
-            insecure = true  # Disable TLS if your Tempo doesn’t use it
+            insecure = true
           }
         }
 
