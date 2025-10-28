@@ -137,8 +137,8 @@ internalTelemetryViaOTLP:
 # For example, {{ REDACTED_EMAIL }} becomes {{` {{ REDACTED_EMAIL }} `}}.
 config:
   exporters:
-    otlp/tempo:
-      endpoint: tempo-distributor.monitoring.svc.cluster.local:4317
+    otlp/alloy:
+      endpoint: grafana-alloy.monitoring.svc.cluster.local:4317
       tls:
         insecure: true
     otlphttp/prometheus:
@@ -222,7 +222,7 @@ config:
       traces:
         exporters:
           - debug
-          - otlp/tempo
+          - otlp/alloy
         processors:
           - memory_limiter
           - batch
