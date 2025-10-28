@@ -57,9 +57,20 @@ alloy:
         output {
           metrics = [otelcol.exporter.otlp.default.input]
           logs    = [otelcol.exporter.otlp.default.input]
-          traces  = [otelcol.exporter.otlp.default.input]
+          traces  = [
+            otelcol.exporter.otlp.default.input,
+            otelcol.connector.servicegraph.default.input,
+          ]
         }
       }
+
+      otelcol.connector.servicegraph "default" {
+        dimensions = ["http.method", "http.target"]
+        output {
+          metrics = [otelcol.exporter.otlp.default.input]
+        }
+      }
+
 
 
     # -- Name of existing ConfigMap to use. Used when create is false.
