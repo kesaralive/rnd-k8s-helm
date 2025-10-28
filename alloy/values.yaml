@@ -50,6 +50,12 @@ alloy:
         grpc {
           endpoint = "0.0.0.0:4317"
         }
+
+        output {
+          metrics = [otelcol.processor.batch.example.input]
+          logs    = [otelcol.processor.batch.example.input]
+          traces  = [otelcol.processor.batch.example.input]
+        }
       }
 
 
