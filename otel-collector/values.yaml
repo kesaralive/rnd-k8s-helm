@@ -141,6 +141,10 @@ config:
       endpoint: tempo-distributor.monitoring.svc.cluster.local:4317
       tls:
         insecure: true
+    otlphttp/prometheus:
+        endpoint: http://prometheus.default.svc.cluster.local:9090/api/v1/otlp
+        tls:
+          insecure: true
     debug: {}
   extensions:
     # The health_check extension is mandatory for this chart.
@@ -207,6 +211,7 @@ config:
       metrics:
         exporters:
           - debug
+          - otlphttp/prometheus
         processors:
           - memory_limiter
           - batch
