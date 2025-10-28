@@ -46,19 +46,8 @@ alloy:
         }
       }
 
-      otelcol.receiver.otlp "otel-receiver" {
-        grpc {
-          endpoint = "127.0.0.1:4317"
-        }
-          http {
-          endpoint = "127.0.0.1:4318"
-        }
-
-        output {
-          metrics = [otelcol.exporter.otlp.default.input]
-          logs    = [otelcol.exporter.otlp.default.input]
-          traces  = [otelcol.exporter.otlp.default.input]
-        }
+      grpc {
+        endpoint = "<HOST>:4317"
       }
 
 
