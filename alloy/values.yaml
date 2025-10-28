@@ -77,12 +77,6 @@ alloy:
 
       otelcol.processor.batch "default" {}
 
-      otelcol.service "default" {
-        pipelines {
-          metrics = [otelcol.receiver.otlp.from_otelcol, otelcol.processor.batch.default, otelcol.exporter.prometheus.local_metrics]
-          traces  = [otelcol.receiver.otlp.from_otelcol, otelcol.processor.batch.default]
-        }
-      }
 
     # -- Name of existing ConfigMap to use. Used when create is false.
     name: null
