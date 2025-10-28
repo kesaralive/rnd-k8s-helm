@@ -119,11 +119,11 @@ alloy:
 
   # -- Extra ports to expose on the Alloy container.
   extraPorts:
-  - name: "grpc"
-    port: 4317
-    targetPort: 4317
-    protocol: "grpc"
-    appProtocol: "grpc"
+    - name: "grpc"
+      port: 4317
+      targetPort: 4317
+      protocol: TCP
+      appProtocol: grpc
 
   # -- Host aliases to add to the Alloy container.
   hostAliases: []
