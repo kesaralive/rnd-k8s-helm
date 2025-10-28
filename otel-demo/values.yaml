@@ -917,7 +917,7 @@ jaeger:
     enabled: false
 
 prometheus:
-  enabled: false
+  enabled: true
   alertmanager:
     enabled: false
   configmapReload:
@@ -926,7 +926,7 @@ prometheus:
   kube-state-metrics:
     enabled: false
   prometheus-node-exporter:
-    enabled: false
+    enabled: true
   prometheus-pushgateway:
     enabled: false
   server:
