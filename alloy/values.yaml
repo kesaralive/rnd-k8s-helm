@@ -65,17 +65,28 @@ alloy:
       }
 
       otelcol.receiver.otlp "from_otelcol" {
-      protocols {
+        protocols {
           grpc { endpoint = "0.0.0.0:4317" }
           http { endpoint = "0.0.0.0:4318" }
         }
       }
 
-      otelcol.exporter.prometheus "local_metrics" {
-        endpoint = "prometheus.default.svc.cluster.local:9090"
+      otelcol.processor.batch "default" {
+        input {
+          metrics = [otelcol.receiver.otlp.from_otelcol.output]
+          traces  = [otelcol.receiver.otlp.from_otelcol.output]
+        }
       }
 
-      otelcol.processor.batch "default" {}
+      otelcol.exporter.prometheus "local_metrics" {
+        prometheus {
+          endpoint = "0.0.0.0:9464"
+        }
+
+        input {
+          metrics = [otelcol.processor.batch.default.output]
+        }
+      }
 
 
     # -- Name of existing ConfigMap to use. Used when create is false.
