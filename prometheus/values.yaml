@@ -371,9 +371,9 @@ server:
   ingress:
     ## If true, Prometheus server Ingress will be created
     ##
-    enabled: false
+    enabled: true
 
-    ingressClassName: ""
+    ingressClassName: "traefik"
 
     ## Prometheus server Ingress annotations
     ##
@@ -391,7 +391,8 @@ server:
     ## Prometheus server Ingress hostnames with optional path (passed through tpl)
     ## Must be provided if Ingress is enabled
     ##
-    hosts: []
+    hosts:
+      - prometheus.pickme.local
     #   - prometheus.domain.com
     #   - domain.com/prometheus
 
