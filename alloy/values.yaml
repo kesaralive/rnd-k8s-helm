@@ -40,51 +40,24 @@ alloy:
         format = "logfmt"
       }
 
-      discovery.kubernetes "pods" {
-        role = "pod"
-      }
-
-      discovery.kubernetes "nodes" {
-        role = "node"
-      }
-
-      discovery.kubernetes "services" {
-        role = "service"
-      }
-
-      discovery.kubernetes "endpoints" {
-        role = "endpoints"
-      }
-
-      discovery.kubernetes "endpointslices" {
-        role = "endpointslice"
-      }
-
-      discovery.kubernetes "ingresses" {
-        role = "ingress"
-      }
-
-      otelcol.receiver.otlp "from_otelcol" {
-        protocols {
-          grpc { endpoint = "0.0.0.0:4317" }
-          http { endpoint = "0.0.0.0:4318" }
+      otelcol.exporter.otlp "default" {
+        client {
+          endpoint = "tempo-distributor.monitoring.svc.cluster.local:4317"
         }
       }
 
-      otelcol.processor.batch "default" {
-        input {
-          metrics = [otelcol.receiver.otlp.from_otelcol.output]
-          traces  = [otelcol.receiver.otlp.from_otelcol.output]
+      otelcol.receiver.otlp "otel-receiver" {
+        grpc {
+          endpoint = "127.0.0.1:4317"
         }
-      }
-
-      otelcol.exporter.prometheus "local_metrics" {
-        prometheus {
-          endpoint = "0.0.0.0:9464"
+          http {
+          endpoint = "127.0.0.1:4318"
         }
 
-        input {
-          metrics = [otelcol.processor.batch.default.output]
+        output {
+          metrics = [otelcol.exporter.otlp.default.input]
+          logs    = [otelcol.exporter.otlp.default.input]
+          traces  = [otelcol.exporter.otlp.default.input]
         }
       }
 
