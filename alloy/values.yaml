@@ -118,12 +118,12 @@ alloy:
   extraArgs: []
 
   # -- Extra ports to expose on the Alloy container.
-  extraPorts: []
-  # - name: "faro"
-  #   port: 12347
-  #   targetPort: 12347
-  #   protocol: "TCP"
-  #   appProtocol: "h2c"
+  extraPorts:
+  - name: "grpc"
+    port: 4317
+    targetPort: 4317
+    protocol: "grpc"
+    appProtocol: "grpc"
 
   # -- Host aliases to add to the Alloy container.
   hostAliases: []
