@@ -123,17 +123,6 @@ alloy:
         }
 
         output {
-          traces = [otelcol.processor.batch.compression.input]
-        }
-      }
-
-      otelcol.processor.batch "compression" {
-
-        timeout = "5s"
-
-        send_batch_size = 10000
-
-        output {
           traces = [otelcol.exporter.otlp.default.input]
         }
       }
