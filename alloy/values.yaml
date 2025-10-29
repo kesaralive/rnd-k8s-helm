@@ -40,6 +40,104 @@ alloy:
         format = "logfmt"
       }
 
+      otelcol.receiver.otlp "default" {
+        grpc {
+          endpoint = "0.0.0.0:4317"
+        }
+
+        output {
+          traces  = [
+            otelcol.exporter.otlp.default.input,
+            otelcol.connector.servicegraph.default.input,
+          ]
+        }
+      }
+
+      otelcol.processor.span "rename_http_spans" {
+        include {
+          match_type = "strict"
+          span_names = ["POST /api/cart"]
+        }
+
+        name {
+          from_attributes = ["http.method", "http.route"]
+          separator       = "::"
+        }
+
+        output {
+          traces = [otelcol.processor.span.set_error_on_404.input]
+        }
+      }
+
+      otelcol.processor.span "set_error_on_404" {
+        include {
+          match_type = "strict"
+          attribute {
+            key   = "http.status_code"
+            value = 404
+          }
+        }
+
+        status {
+          code        = "Error"
+          description = "Resource was not found by the server"
+        }
+
+        output {
+          traces = [otelcol.processor.k8sattributes.add_custom_labels.input]
+        }
+      }
+
+      otelcol.processor.k8sattributes "add_custom_labels" {
+        extract {
+          label {
+            key = "app"
+            tag_name = "app_type"
+          }
+
+          metadata = [
+            "k8s.container.name",
+            "container.image.name",
+            "k8s.pod.start_time",
+          ]
+        }
+
+        output {
+          traces = [otelcol.processor.transform.add_transform.input]
+        }
+      }
+
+      otelcol.processor.transform "add_transform" {
+        error_mode = "ignore"
+
+        trace_statements {
+          context = "span" // We are modifying span attributes
+          statements = [
+            // Use 'where' clauses for conditional logic.
+            `set(attributes["http.status_class"], "5xx") where attributes["http.status_code"] >= 500`,
+            `set(attributes["http.status_class"], "4xx") where attributes["http.status_code"] >= 400 and attributes["http.status_code"] < 500`,
+            `set(attributes["http.status_class"], "2xx") where attributes["http.status_code"] >= 200 and attributes["http.status_code"] < 300`,
+            `set(attributes["duration_ms"], (end_time_unix_nano - start_time_unix_nano) / 1000000)`,
+            `replace_pattern(attributes["http.server_name"], "([a-zA-Z0-9\\.-]+|(\\d{1,3}\\.){3}\\d{1,3})(:\\d+)?.*$", "***")`,
+          ]
+        }
+
+        output {
+          traces = [otelcol.processor.batch.compression.input]
+        }
+      }
+
+      otelcol.processor.batch "compression" {
+        // Wait up to 5 seconds before sending a batch.
+        timeout = "5s"
+        // Collect up to 10,000 items before sending.
+        send_batch_size = 10000
+
+        output {
+          traces = [otelcol.exporter.otlp.default.input]
+        }
+      }
+
       otelcol.exporter.otlp "default" {
         client {
           endpoint = "tempo-distributor.monitoring.svc.cluster.local:4317"
@@ -53,19 +151,6 @@ alloy:
         forward_to = [prometheus.remote_write.mimir.receiver]
       }
 
-      otelcol.receiver.otlp "default" {
-        grpc {
-          endpoint = "0.0.0.0:4317"
-        }
-
-        output {
-          traces  = [
-            otelcol.exporter.otlp.default.input,
-            otelcol.connector.servicegraph.default.input,
-          ]
-        }
-      }
-      
 
       otelcol.connector.servicegraph "default" {
         dimensions = ["http.method", "http.target"]
