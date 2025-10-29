@@ -47,7 +47,7 @@ alloy:
 
         output {
           traces  = [
-            otelcol.exporter.otlp.default.input,
+            otelcol.processor.span.rename_http_spans.input,
             otelcol.connector.servicegraph.default.input,
           ]
         }
@@ -128,9 +128,9 @@ alloy:
       }
 
       otelcol.processor.batch "compression" {
-        // Wait up to 5 seconds before sending a batch.
+
         timeout = "5s"
-        // Collect up to 10,000 items before sending.
+
         send_batch_size = 10000
 
         output {
