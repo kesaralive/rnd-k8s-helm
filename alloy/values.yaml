@@ -59,8 +59,6 @@ alloy:
         }
 
         output {
-          metrics = [otelcol.exporter.otlp.default.input]
-          logs    = [otelcol.exporter.otlp.default.input]
           traces  = [
             otelcol.exporter.otlp.default.input,
             otelcol.connector.servicegraph.default.input,
