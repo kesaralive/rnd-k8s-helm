@@ -68,7 +68,7 @@ alloy:
       
 
       otelcol.connector.servicegraph "default" {
-        dimensions = ["http.method"]
+        dimensions = ["http.method", "http.target"]
         output {
           metrics = [otelcol.exporter.prometheus.default.input]
         }
