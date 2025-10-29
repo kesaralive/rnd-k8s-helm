@@ -78,12 +78,12 @@ alloy:
       prometheus.remote_write "mimir" {
         endpoint {
           url = "http://mimir-distributor.mimir.svc.cluster.local:8080/api/v1/push"
-          headers {
-            X-Scope-OrgID = "pickme"
+
+          headers = {
+            "X-Scope-OrgID" = "pickme"
           }
         }
       }
-
 
     # -- Name of existing ConfigMap to use. Used when create is false.
     name: null
